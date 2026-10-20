@@ -49,8 +49,14 @@ func (h *Handler) PostShortener(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	validatedUrl, err := helper.ValidateURL(req.Url)
+	if err != nil {
+		helper.JsonError(w, http.StatusBadRequest, err.Error())
+		return
+	}
+
 	urlCreated, err := h.queries.CreateUrl(r.Context(), dbgen.CreateUrlParams{
-		Url:       req.Url,
+		Url:       validatedUrl,
 		ShortCode: shortCode,
 	})
 	if err != nil {
