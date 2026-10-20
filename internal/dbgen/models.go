@@ -11,9 +11,9 @@ import (
 )
 
 type Url struct {
-	ID        uuid.UUID
-	CreatedAt time.Time
-	UpdatedAt time.Time
-	Url       string
-	ShortCode string
+	ID        uuid.UUID `json:"id"`
+	CreatedAt time.Time `json:"createdAt"`
+	UpdatedAt time.Time `json:"updatedAt"`
+	Url       string    `json:"url"`
+	ShortCode string    `json:"shortCode"`
 }

@@ -27,8 +27,8 @@ RETURNING id, created_at, updated_at, url, short_code
 `
 
 type CreateUrlParams struct {
-	Url       string
-	ShortCode string
+	Url       string `json:"url"`
+	ShortCode string `json:"shortCode"`
 }
 
 func (q *Queries) CreateUrl(ctx context.Context, arg CreateUrlParams) (Url, error) {
