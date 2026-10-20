@@ -44,6 +44,7 @@ func main() {
 	mux.HandleFunc("GET /shorten/{shortCode}", handler.GetShortenByCode)
 	mux.HandleFunc("PUT /shorten/{shortCode}", handler.UpdateShorten)
 	mux.HandleFunc("DELETE /shorten/{shortCode}", handler.DeleteShorten)
+	mux.HandleFunc("GET /shorten/{shortCode}/stats", handler.GetStats)
 
 	server := &http.Server{
 		Addr:    ":1804",

@@ -25,3 +25,8 @@ RETURNING *;
 
 -- name: DeleteUrlByShortCode :exec
 DELETE FROM urls WHERE short_code = $1;
+
+-- name: IncrementAccessCount :exec
+UPDATE urls
+SET access_count = access_count + 1
+WHERE short_code = $1;

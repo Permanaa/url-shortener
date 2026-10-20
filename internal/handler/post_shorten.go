@@ -65,5 +65,13 @@ func (h *Handler) PostShortener(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	helper.JsonSuccess(w, http.StatusCreated, urlCreated)
+	urlRes := UrlResponse{
+		ID:        urlCreated.ID,
+		CreatedAt: urlCreated.CreatedAt,
+		UpdatedAt: urlCreated.UpdatedAt,
+		Url:       urlCreated.Url,
+		ShortCode: urlCreated.ShortCode,
+	}
+
+	helper.JsonSuccess(w, http.StatusCreated, urlRes)
 }

@@ -5,15 +5,17 @@
 package dbgen
 
 import (
+	"database/sql"
 	"time"
 
 	"github.com/google/uuid"
 )
 
 type Url struct {
-	ID        uuid.UUID `json:"id"`
-	CreatedAt time.Time `json:"createdAt"`
-	UpdatedAt time.Time `json:"updatedAt"`
-	Url       string    `json:"url"`
-	ShortCode string    `json:"shortCode"`
+	ID          uuid.UUID     `json:"id"`
+	CreatedAt   time.Time     `json:"createdAt"`
+	UpdatedAt   time.Time     `json:"updatedAt"`
+	Url         string        `json:"url"`
+	ShortCode   string        `json:"shortCode"`
+	AccessCount sql.NullInt64 `json:"accessCount"`
 }

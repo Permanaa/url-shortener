@@ -23,7 +23,7 @@ INSERT INTO urls (
     $1,
     $2
 )
-RETURNING id, created_at, updated_at, url, short_code
+RETURNING id, created_at, updated_at, url, short_code, access_count
 `
 
 type CreateUrlParams struct {
@@ -40,6 +40,7 @@ func (q *Queries) CreateUrl(ctx context.Context, arg CreateUrlParams) (Url, erro
 		&i.UpdatedAt,
 		&i.Url,
 		&i.ShortCode,
+		&i.AccessCount,
 	)
 	return i, err
 }
@@ -54,7 +55,7 @@ func (q *Queries) DeleteUrlByShortCode(ctx context.Context, shortCode string) er
 }
 
 const getUrlByShortCode = `-- name: GetUrlByShortCode :one
-SELECT id, created_at, updated_at, url, short_code FROM urls WHERE short_code = $1
+SELECT id, created_at, updated_at, url, short_code, access_count FROM urls WHERE short_code = $1
 `
 
 func (q *Queries) GetUrlByShortCode(ctx context.Context, shortCode string) (Url, error) {
@@ -66,15 +67,27 @@ func (q *Queries) GetUrlByShortCode(ctx context.Context, shortCode string) (Url,
 		&i.UpdatedAt,
 		&i.Url,
 		&i.ShortCode,
+		&i.AccessCount,
 	)
 	return i, err
+}
+
+const incrementAccessCount = `-- name: IncrementAccessCount :exec
+UPDATE urls
+SET access_count = access_count + 1
+WHERE short_code = $1
+`
+
+func (q *Queries) IncrementAccessCount(ctx context.Context, shortCode string) error {
+	_, err := q.db.ExecContext(ctx, incrementAccessCount, shortCode)
+	return err
 }
 
 const updateUrlByShortCode = `-- name: UpdateUrlByShortCode :one
 UPDATE urls
 SET url = $1, updated_at = NOW()
 WHERE short_code = $2
-RETURNING id, created_at, updated_at, url, short_code
+RETURNING id, created_at, updated_at, url, short_code, access_count
 `
 
 type UpdateUrlByShortCodeParams struct {
@@ -91,6 +104,7 @@ func (q *Queries) UpdateUrlByShortCode(ctx context.Context, arg UpdateUrlByShort
 		&i.UpdatedAt,
 		&i.Url,
 		&i.ShortCode,
+		&i.AccessCount,
 	)
 	return i, err
 }

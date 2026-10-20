@@ -52,5 +52,13 @@ func (h *Handler) UpdateShorten(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	helper.JsonSuccess(w, http.StatusOK, updateUrl)
+	urlRes := UrlResponse{
+		ID:        updateUrl.ID,
+		CreatedAt: updateUrl.CreatedAt,
+		UpdatedAt: updateUrl.UpdatedAt,
+		Url:       updateUrl.Url,
+		ShortCode: updateUrl.ShortCode,
+	}
+
+	helper.JsonSuccess(w, http.StatusOK, urlRes)
 }
