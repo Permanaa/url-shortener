@@ -6,6 +6,8 @@ import (
 	"errors"
 	"log"
 	"net/http"
+	"regexp"
+	"strings"
 	"time"
 
 	"github.com/google/uuid"
@@ -44,10 +46,18 @@ func (h *Handler) PostShortener(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		if findUrl.ShortCode != "" {
-			helper.JsonError(w, http.StatusConflict, "Url short code already exist")
+			helper.JsonError(w, http.StatusConflict, "Short code already exists")
 			return
 		}
-		shortCode = req.ShortCode
+		shortCode = strings.TrimSpace(req.ShortCode)
+		if len(shortCode) > 20 || len(shortCode) < 6 {
+			helper.JsonError(w, http.StatusBadRequest, "Short code must be between 6 and 20 characters")
+			return
+		}
+		if !regexp.MustCompile(`^[a-zA-Z0-9_-]{6,20}$`).MatchString(shortCode) {
+			helper.JsonError(w, http.StatusBadRequest, "Use only letters, numbers, hyphens (-), and underscores (_)")
+			return
+		}
 	} else {
 		// [TODO] url shorten algorithm
 	}
