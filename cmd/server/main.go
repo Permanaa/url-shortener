@@ -42,6 +42,7 @@ func main() {
 	})
 	mux.HandleFunc("POST /shorten", handler.PostShortener)
 	mux.HandleFunc("GET /shorten/{shortCode}", handler.GetShortenByCode)
+	mux.HandleFunc("PUT /shorten/{shortCode}", handler.UpdateShorten)
 
 	server := &http.Server{
 		Addr:    ":1804",

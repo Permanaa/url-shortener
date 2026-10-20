@@ -16,3 +16,9 @@ RETURNING *;
 
 -- name: GetUrlByShortCode :one
 SELECT * FROM urls WHERE short_code = $1;
+
+-- name: UpdateUrlByShortCode :one
+UPDATE urls
+SET url = $1, updated_at = NOW()
+WHERE short_code = $2
+RETURNING *;

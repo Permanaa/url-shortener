@@ -60,3 +60,28 @@ func (q *Queries) GetUrlByShortCode(ctx context.Context, shortCode string) (Url,
 	)
 	return i, err
 }
+
+const updateUrlByShortCode = `-- name: UpdateUrlByShortCode :one
+UPDATE urls
+SET url = $1, updated_at = NOW()
+WHERE short_code = $2
+RETURNING id, created_at, updated_at, url, short_code
+`
+
+type UpdateUrlByShortCodeParams struct {
+	Url       string `json:"url"`
+	ShortCode string `json:"shortCode"`
+}
+
+func (q *Queries) UpdateUrlByShortCode(ctx context.Context, arg UpdateUrlByShortCodeParams) (Url, error) {
+	row := q.db.QueryRowContext(ctx, updateUrlByShortCode, arg.Url, arg.ShortCode)
+	var i Url
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.Url,
+		&i.ShortCode,
+	)
+	return i, err
+}
