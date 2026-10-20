@@ -22,3 +22,6 @@ UPDATE urls
 SET url = $1, updated_at = NOW()
 WHERE short_code = $2
 RETURNING *;
+
+-- name: DeleteUrlByShortCode :exec
+DELETE FROM urls WHERE short_code = $1;

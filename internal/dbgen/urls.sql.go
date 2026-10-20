@@ -44,6 +44,15 @@ func (q *Queries) CreateUrl(ctx context.Context, arg CreateUrlParams) (Url, erro
 	return i, err
 }
 
+const deleteUrlByShortCode = `-- name: DeleteUrlByShortCode :exec
+DELETE FROM urls WHERE short_code = $1
+`
+
+func (q *Queries) DeleteUrlByShortCode(ctx context.Context, shortCode string) error {
+	_, err := q.db.ExecContext(ctx, deleteUrlByShortCode, shortCode)
+	return err
+}
+
 const getUrlByShortCode = `-- name: GetUrlByShortCode :one
 SELECT id, created_at, updated_at, url, short_code FROM urls WHERE short_code = $1
 `
