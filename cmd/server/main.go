@@ -41,6 +41,7 @@ func main() {
 		helper.JsonMessage(w, http.StatusOK, "Hello, Universe!")
 	})
 	mux.HandleFunc("POST /shorten", handler.PostShortener)
+	mux.HandleFunc("GET /shorten/{shortCode}", handler.GetShortenByCode)
 
 	server := &http.Server{
 		Addr:    ":1804",
