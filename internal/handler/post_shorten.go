@@ -46,12 +46,20 @@ func (h *Handler) PostShortener(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	} else {
-		var errGenerateCode error
-		shortCode, errGenerateCode = generateShortCode()
-		if errGenerateCode != nil {
-			log.Println("err generate short code:", errGenerateCode)
-			helper.JsonError(w, http.StatusInternalServerError, "Something went wrong")
-			return
+		maxRetries := 5
+		for range maxRetries {
+			var errGenerateCode error
+			shortCode, errGenerateCode = generateShortCode()
+			if errGenerateCode != nil {
+				log.Println("err generate short code:", errGenerateCode)
+				helper.JsonError(w, http.StatusInternalServerError, "Something went wrong")
+				return
+			}
+
+			_, err := h.queries.GetUrlByShortCode(r.Context(), shortCode)
+			if err == nil {
+				break
+			}
 		}
 	}
 
