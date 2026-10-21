@@ -57,7 +57,7 @@ func (h *Handler) PostShortener(w http.ResponseWriter, r *http.Request) {
 			}
 
 			_, err := h.queries.GetUrlByShortCode(r.Context(), shortCode)
-			if err == nil {
+			if err != nil && errors.Is(err, sql.ErrNoRows) {
 				break
 			}
 		}
