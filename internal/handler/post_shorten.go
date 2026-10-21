@@ -1,10 +1,12 @@
 package handler
 
 import (
+	"crypto/rand"
 	"database/sql"
 	"encoding/json"
 	"errors"
 	"log"
+	"math/big"
 	"net/http"
 	"regexp"
 	"strings"
@@ -44,9 +46,13 @@ func (h *Handler) PostShortener(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	} else {
-		// [TODO] url shorten algorithm
-		helper.JsonMessage(w, http.StatusOK, "[TODO] Auto generated short code")
-		return
+		var errGenerateCode error
+		shortCode, errGenerateCode = generateShortCode()
+		if errGenerateCode != nil {
+			log.Println("err generate short code:", errGenerateCode)
+			helper.JsonError(w, http.StatusInternalServerError, "Something went wrong")
+			return
+		}
 	}
 
 	validatedUrl, err := helper.ValidateURL(req.Url)
@@ -74,4 +80,26 @@ func (h *Handler) PostShortener(w http.ResponseWriter, r *http.Request) {
 	}
 
 	helper.JsonSuccess(w, http.StatusCreated, urlRes)
+}
+
+const alphabet = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+
+func generateShortCode() (string, error) {
+	length := 8
+
+	var code strings.Builder
+	code.Grow(length)
+
+	max := big.NewInt(int64(len(alphabet)))
+
+	for i := 0; i < length; i++ {
+		n, err := rand.Int(rand.Reader, max)
+		if err != nil {
+			return "", err
+		}
+
+		code.WriteByte(alphabet[n.Int64()])
+	}
+
+	return code.String(), nil
 }
