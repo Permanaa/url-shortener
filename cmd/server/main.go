@@ -13,6 +13,7 @@ import (
 	"github.com/permanaa/url-shortener/internal/dbgen"
 	"github.com/permanaa/url-shortener/internal/handler"
 	"github.com/permanaa/url-shortener/internal/helper"
+	"github.com/permanaa/url-shortener/internal/middleware"
 )
 
 func main() {
@@ -46,9 +47,12 @@ func main() {
 	mux.HandleFunc("DELETE /shorten/{shortCode}", handler.DeleteShorten)
 	mux.HandleFunc("GET /shorten/{shortCode}/stats", handler.GetStats)
 
+	rateLimiter := middleware.NewRateLimiter()
+	applyMiddleware := middleware.ApplyMiddleware(mux, rateLimiter.Apply)
+
 	server := &http.Server{
 		Addr:    ":1804",
-		Handler: mux,
+		Handler: applyMiddleware,
 	}
 
 	log.Println("Serving on port: 1804")
