@@ -41,11 +41,11 @@ func main() {
 	mux.HandleFunc("GET /healthz", func(w http.ResponseWriter, r *http.Request) {
 		helper.JsonMessage(w, http.StatusOK, "Hello, Universe!")
 	})
-	mux.HandleFunc("POST /shorten", handler.PostShortener)
-	mux.HandleFunc("GET /shorten/{shortCode}", handler.GetShortenByCode)
-	mux.HandleFunc("PUT /shorten/{shortCode}", handler.UpdateShorten)
-	mux.HandleFunc("DELETE /shorten/{shortCode}", handler.DeleteShorten)
-	mux.HandleFunc("GET /shorten/{shortCode}/stats", handler.GetStats)
+	mux.HandleFunc("POST /shortnd", handler.PostShortener)
+	mux.HandleFunc("GET /shortnd/{shortCode}", handler.GetShortenByCode)
+	mux.HandleFunc("PUT /shortnd/{shortCode}", handler.UpdateShorten)
+	mux.HandleFunc("DELETE /shortnd/{shortCode}", handler.DeleteShorten)
+	mux.HandleFunc("GET /shortnd/{shortCode}/stats", handler.GetStats)
 
 	rateLimiter := middleware.NewRateLimiter()
 	applyMiddleware := middleware.ApplyMiddleware(mux, rateLimiter.Apply)
