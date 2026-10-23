@@ -48,7 +48,12 @@ func main() {
 	mux.HandleFunc("GET /shortnd/{shortCode}/stats", handler.GetStats)
 
 	rateLimiter := middleware.NewRateLimiter()
-	applyMiddleware := middleware.ApplyMiddleware(mux, rateLimiter.Apply)
+	cors := middleware.NewCors()
+	applyMiddleware := middleware.ApplyMiddleware(
+		mux,
+		rateLimiter.Apply,
+		cors.Apply,
+	)
 
 	server := &http.Server{
 		Addr:    ":1804",
